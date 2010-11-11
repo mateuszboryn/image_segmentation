@@ -24,7 +24,7 @@ ERROR=0
 for FILE in `ls "$DATA_DIR"`
 do
 	echo "    Running test for file $RESULTS_DIR/$FILE"
-	COMMAND="$EXEC_FILE -i \"$FILE\" -o \"$RESULTS_DIR/$FILE\""
+	COMMAND="$EXEC_FILE -i $DATA_DIR/$FILE -o $RESULTS_DIR/$FILE"
 	echo "    Command: $COMMAND"
 	$COMMAND
 	if [ "$?" != 0 ]; then

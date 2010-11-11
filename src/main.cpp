@@ -46,16 +46,24 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 
+		cout << "before imread\n";
 		Mat image = imread(inputImageFilename.c_str());
-		Mat imageGray;
+		Mat imageGray = Mat::zeros(image.size(), CV_8U);
 
+		cout << "image.size().width: " << image.size().width << endl;
+		cout << "image.size().height: " << image.size().height << endl;
+
+		cout << "before cvtColor\n";
 		cvtColor(image, imageGray, CV_BGR2GRAY, 1);
 
+		cout << "before Segmentation s(outputDir);\n";
 		Segmentation s(outputDir);
 
+		cout << "before s.segmentImage(imageGray);\n";
 		s.segmentImage(imageGray);
 	} catch (const exception& ex) {
 		cout << "Error: " << ex.what() << endl;
+		return 1;
 	}
 	return 0;
 }
