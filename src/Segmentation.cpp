@@ -42,6 +42,11 @@ cv::Mat Segmentation::segmentImage(const cv::Mat& image)
 
 	cout << "mean: " << mean << endl;
 
+	Mat afterAdaptive;
+
+	adaptiveThreshold(image, afterAdaptive, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 17, 1);
+	imwrite((outDir + "adaptive.png").c_str(), afterAdaptive);
+
 	ThresholdedImage first = findOptimalThreshold(image, ones, mean, 1);
 
 	findOptimalThreshold(first.image, first.maskAbove, first.meanGrayAbove, 1);
