@@ -30,7 +30,6 @@ public:
 
 	cv::Mat segmentImage(const cv::Mat& image);
 
-
 private:
 	std::string outDir;
 	ThresholdedImage thresholdImage(const cv::Mat& image, const cv::Mat& mask, int threshold);

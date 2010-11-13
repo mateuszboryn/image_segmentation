@@ -11,7 +11,7 @@
 #include <boost/shared_ptr.hpp>
 #include <cv.h>
 #include <highgui.h>
-#include "Segmentation.h"
+#include "Threshold.h"
 
 namespace po = boost::program_options;
 using namespace std;
@@ -53,9 +53,11 @@ int main(int argc, char *argv[])
 		Mat imageGray;
 		cvtColor(image, imageGray, CV_BGR2GRAY, 1);
 
-		Segmentation s(outputDir);
-
-		s.segmentImage(imageGray);
+		Threshold t;
+		Mat mask(imageGray.size(), CV_8U);
+		ThresholdedImage ti = t.thresholdImageOptimal(imageGray, mask, 100, 1);
+		imwrite(outputDir + "/maskAbove.png", ti.maskAbove);
+		imwrite(outputDir + "/maskBelow.png", ti.maskBelow);
 	} catch (const exception& ex) {
 		cout << "Error: " << ex.what() << endl;
 		return 1;
