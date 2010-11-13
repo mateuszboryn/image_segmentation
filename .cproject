@@ -232,6 +232,14 @@
 						<useDefaultCommand>true</useDefaultCommand>
 						<runAllBuilders>true</runAllBuilders>
 					</target>
+					<target name="ctest -V -O test_out.txt" path="build" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+						<buildCommand>ctest</buildCommand>
+						<buildArguments>-V -O test_out.txt</buildArguments>
+						<buildTarget/>
+						<stopOnError>true</stopOnError>
+						<useDefaultCommand>false</useDefaultCommand>
+						<runAllBuilders>false</runAllBuilders>
+					</target>
 					<target name="test" path="build" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 						<buildCommand>make</buildCommand>
 						<buildArguments/>
