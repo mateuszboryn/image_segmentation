@@ -18,8 +18,8 @@ Threshold::~Threshold()
 {
 }
 
-void Threshold::thresholdImage(const cv::Mat& image, const cv::Mat& mask,
-		int threshold, u_char belowValue, u_char aboveOrEqualValue, cv::Mat& result)
+void Threshold::thresholdImage(const cv::Mat& image, const cv::Mat& mask, int threshold,
+		u_char belowValue, u_char aboveOrEqualValue, cv::Mat& result)
 {
 	if (image.type() != CV_8U) {
 		throw logic_error("image.type() != CV_8U");
@@ -49,6 +49,35 @@ void Threshold::thresholdImage(const cv::Mat& image, const cv::Mat& mask,
 				} else {
 					result.at<u_int8_t> (y, x) = belowValue;
 				}
+			}
+		}
+	}
+}
+
+void Threshold::histogram(const cv::Mat& image, const cv::Mat& mask, int *histogram)
+{
+	if (image.type() != CV_8U) {
+		throw logic_error("image.type() != CV_8U");
+	}
+	if (mask.type() != CV_8U) {
+		throw logic_error("mask.type() != CV_8U");
+	}
+	if (image.size() != mask.size()) {
+		throw logic_error("image.size() != mask.size()");
+	}
+	if (image.size().width < 1 || image.size().height < 1) {
+		throw logic_error("image.size().width < 1 || image.size().height < 1");
+	}
+
+	for (int i = 0; i < histogramSize; ++i) {
+		histogram[i] = 0;
+	}
+
+	Size imageSize = image.size();
+	for (int y = 0; y < imageSize.height; ++y) {
+		for (int x = 0; x < imageSize.width; ++x) {
+			if (mask.at<u_int8_t> (y, x) != 0) {
+				histogram[image.at<u_int8_t> (y, x)]++;
 			}
 		}
 	}
