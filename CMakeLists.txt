@@ -18,6 +18,21 @@ ADD_DEFINITIONS(-Werror=return-type)
 
 enable_testing()
 
+
+MACRO(ADD_TEST_CASE TEST_NAME TESTED_SOURCE_FILES)
+    ADD_EXECUTABLE(${TEST_NAME} 
+        ${TEST_NAME}.cpp 
+        ${TESTED_SOURCE_FILES}
+    )
+    
+    target_link_libraries(${TEST_NAME}
+        ${image_segmentation_LIBRARIES}
+        ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+    )
+
+    add_test(${TEST_NAME} ${TEST_NAME})
+ENDMACRO(ADD_TEST_CASE)
+
 # SET_TARGET_PROPERTIES(st PROPERTIES LINK_FLAGS -p)
 add_subdirectory(src)
 add_subdirectory(tests)

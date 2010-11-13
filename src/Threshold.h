@@ -13,20 +13,13 @@
 #include <string>
 #include <stdexcept>
 
-struct ThresholdedImage {
-	cv::Mat maskBelow;
-	int meanGrayBelow;
-	cv::Mat maskAbove;
-	int meanGrayAbove;
-};
-
-
 class Threshold {
 public:
 	Threshold();
 	virtual ~Threshold();
-	ThresholdedImage thresholdImage(const cv::Mat& image, const cv::Mat& mask, int threshold);
-	ThresholdedImage thresholdImageOptimal(const cv::Mat& image, const cv::Mat& mask, int threshold, int eps);
+	void thresholdImage(const cv::Mat& image, const cv::Mat& mask, int threshold,
+			u_char belowValue, u_char aboveOrEqualValue, cv::Mat& result);
+//	void thresholdImageOptimal(const cv::Mat& image, const cv::Mat& mask, int threshold, int eps);
 };
 
 #endif /* THRESHOLD_H_ */

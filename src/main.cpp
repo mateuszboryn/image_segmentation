@@ -53,11 +53,11 @@ int main(int argc, char *argv[])
 		Mat imageGray;
 		cvtColor(image, imageGray, CV_BGR2GRAY, 1);
 
-		Threshold t;
-		Mat mask(imageGray.size(), CV_8U);
-		ThresholdedImage ti = t.thresholdImageOptimal(imageGray, mask, 100, 1);
-		imwrite(outputDir + "/maskAbove.png", ti.maskAbove);
-		imwrite(outputDir + "/maskBelow.png", ti.maskBelow);
+//		Threshold t;
+//		Mat mask(imageGray.size(), CV_8U);
+//		ThresholdedImage ti = t.thresholdImageOptimal(imageGray, mask, 100, 1);
+//		imwrite(outputDir + "/maskAbove.png", ti.maskAbove);
+//		imwrite(outputDir + "/maskBelow.png", ti.maskBelow);
 	} catch (const exception& ex) {
 		cout << "Error: " << ex.what() << endl;
 		return 1;
