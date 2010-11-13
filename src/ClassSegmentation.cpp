@@ -44,6 +44,7 @@ void ClassSegmentation::segmentation(cv::Mat& image, SegmentsCollection& segment
 			u_int8_t colorClass = image.at<u_int8_t> (y, x);
 			if (colorClass != 0) {
 				boost::shared_ptr<Segment> s = segments.createSegment();
+				s->image.setTo(0);
 				extractSegment(image, y, x, colorClass, s);
 				if (s->segmentArea < minSegmentArea) {
 					segments.removeRecentlyCreatedSegment();
