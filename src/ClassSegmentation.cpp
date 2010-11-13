@@ -13,7 +13,7 @@ using namespace cv;
 ClassSegmentation::ClassSegmentation(cv::Size imageSize) :
 	imageSize(imageSize)
 {
-	if(imageSize.width < 1 || imageSize.height < 1){
+	if (imageSize.width < 1 || imageSize.height < 1) {
 		throw logic_error("imageSize.width < 1 || imageSize.height < 1");
 	}
 }
@@ -31,7 +31,7 @@ void ClassSegmentation::segmentation(cv::Mat& image, SegmentsCollection& segment
 	if (image.type() != CV_8U) {
 		throw logic_error("image.type() != CV_8U");
 	}
-	if(image.size() != segments.getImageSize()){
+	if (image.size() != segments.getImageSize()) {
 		throw logic_error("image.size() != segments.getImageSize()");
 	}
 
@@ -46,6 +46,7 @@ void ClassSegmentation::segmentation(cv::Mat& image, SegmentsCollection& segment
 				boost::shared_ptr<Segment> s = segments.createSegment();
 				s->image.setTo(0);
 				extractSegment(image, y, x, colorClass, s);
+				s->segmentClass = colorClass;
 				if (s->segmentArea < minSegmentArea) {
 					segments.removeRecentlyCreatedSegment();
 				}
