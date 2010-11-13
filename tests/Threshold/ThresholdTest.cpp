@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE( GraySquareOnGrayBackground )
 
 	result = Mat::zeros(image.size(), CV_8U);
 	t.thresholdImage(image, mask, 85, 40, 230, result);
-	BOOST_CHECK( ImageComparator::isEqual<u_char>(result, imread(DATA_DIR "7.bmp", -1)) );
+	BOOST_CHECK( ImageComparator::isEqual<u_char>(result, expectedResult) );
 	imwrite(RESULTS_DIR "5_thresholded_85.bmp", result);
 
 	result = Mat::zeros(image.size(), CV_8U);
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE( GraySquareOnGrayBackground )
 
 	result = Mat::zeros(image.size(), CV_8U);
 	t.thresholdImage(image, mask, 170, 40, 230, result);
-	BOOST_CHECK( ImageComparator::isEqual<u_char>(result, expectedResult) );
+	BOOST_CHECK( ImageComparator::isEqual<u_char>(result, imread(DATA_DIR "6.bmp", -1)) );
 	imwrite(RESULTS_DIR "5_thresholded_170.bmp", result);
 
 	result = Mat::zeros(image.size(), CV_8U);
@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE( GraySquareOnGrayBackgroundWithMask )
 
 	result = Mat::zeros(image.size(), CV_8U);
 	t.thresholdImage(image, mask, 85, 40, 230, result);
-	BOOST_CHECK( ImageComparator::isEqual<u_char>(result, imread(DATA_DIR "5_expected_mask_3_above.bmp", -1)) );
+	BOOST_CHECK( ImageComparator::isEqual<u_char>(result, expectedResult) );
 	imwrite(RESULTS_DIR "5_thresholded_mask_85.bmp", result);
 
 	result = Mat::zeros(image.size(), CV_8U);
@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_CASE( GraySquareOnGrayBackgroundWithMask )
 
 	result = Mat::zeros(image.size(), CV_8U);
 	t.thresholdImage(image, mask, 170, 40, 230, result);
-	BOOST_CHECK( ImageComparator::isEqual<u_char>(result, expectedResult) );
+	BOOST_CHECK( ImageComparator::isEqual<u_char>(result, imread(DATA_DIR "5_expected_mask_3_below.bmp", -1)) );
 	imwrite(RESULTS_DIR "5_thresholded_mask_170.bmp", result);
 
 	result = Mat::zeros(image.size(), CV_8U);

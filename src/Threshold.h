@@ -18,7 +18,7 @@ public:
 	Threshold();
 	virtual ~Threshold();
 	void thresholdImage(const cv::Mat& image, const cv::Mat& mask, int threshold,
-			u_char belowValue, u_char aboveOrEqualValue, cv::Mat& result);
+			u_char belowOrEqualValue, u_char aboveValue, cv::Mat& result);
 
 	static const int histogramSize = 256;
 	/**
@@ -29,7 +29,14 @@ public:
 	 */
 	void histogram(const cv::Mat& image, const cv::Mat& mask, int *histogram);
 
-//	void thresholdImageOptimal(const cv::Mat& image, const cv::Mat& mask, int threshold, int eps);
+	/**
+	 *
+	 * @param histogram This must be allocated array of histogramSize elements type int.
+	 * @return Optimal threshold.
+	 */
+	int findOptimalThreshold(int *histogram);
+
+	//	void thresholdImageOptimal(const cv::Mat& image, const cv::Mat& mask, int threshold, int eps);
 };
 
 #endif /* THRESHOLD_H_ */

@@ -19,10 +19,10 @@ ADD_DEFINITIONS(-Werror=return-type)
 enable_testing()
 
 
-MACRO(ADD_TEST_CASE TEST_NAME TESTED_SOURCE_FILES)
+MACRO(ADD_TEST_CASE TEST_NAME)
     ADD_EXECUTABLE(${TEST_NAME} 
         ${TEST_NAME}.cpp 
-        ${TESTED_SOURCE_FILES}
+        ${ARGN}
     )
     
     target_link_libraries(${TEST_NAME}
@@ -33,6 +33,5 @@ MACRO(ADD_TEST_CASE TEST_NAME TESTED_SOURCE_FILES)
     add_test(${TEST_NAME} ${TEST_NAME})
 ENDMACRO(ADD_TEST_CASE)
 
-# SET_TARGET_PROPERTIES(st PROPERTIES LINK_FLAGS -p)
 add_subdirectory(src)
 add_subdirectory(tests)
