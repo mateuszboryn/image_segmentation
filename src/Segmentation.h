@@ -13,30 +13,30 @@
 #include <string>
 #include <stdexcept>
 
-struct ThresholdedImage {
-	cv::Mat image;
-	cv::Mat maskBelow;
-	int meanGrayBelow;
-	cv::Mat maskAbove;
-	int meanGrayAbove;
-};
+#include "ClassSegmentation.h"
+#include "Threshold.h"
 
-
-class Segmentation
-{
+class Segmentation {
 public:
-	Segmentation(const std::string outDir);
+	Segmentation(cv::Size imageSize, const std::string outDir);
 	virtual ~Segmentation();
 
-	cv::Mat segmentImage(const cv::Mat& image);
+	void segmentImage(const cv::Mat& image, SegmentsCollection& segments);
 
 private:
-	std::string outDir;
-	ThresholdedImage thresholdImage(const cv::Mat& image, const cv::Mat& mask, int threshold);
-	int getMean(const cv::Mat& image, const cv::Mat& mask);
-	ThresholdedImage findOptimalThreshold(const cv::Mat& image, const cv::Mat& mask, int threshold, int eps);
-	int thresholdImageCnt;
+	cv::Size imageSize;
 
+	std::string outDir;
+	int imageCnt;
+
+	ClassSegmentation cs;
+	Threshold th;
+
+	int recurseLevel;
+
+	void segmentRecursive(const cv::Mat& image, cv::Mat& mask, SegmentsCollection& segments);
+
+	bool checkTerminationCondition(const cv::Mat& image, cv::Mat& mask);
 };
 
 #endif /* SEGMENTATION_H_ */
