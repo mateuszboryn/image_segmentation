@@ -33,127 +33,90 @@ BOOST_AUTO_TEST_CASE( Params )
 	}
 
 	Size s(50, 50);
-	SegmentsCollection sc(s);
 	ClassSegmentation classSegmentation(s);
 
 	Mat m(Size(50, 49), CV_8U);
-	BOOST_CHECK_THROW(classSegmentation.segmentation(m, sc, 1), logic_error);
+	BOOST_CHECK_THROW(classSegmentation.segmentation(m, 1), logic_error);
 	m = Mat(Size(49, 50), CV_8U);
-	BOOST_CHECK_THROW(classSegmentation.segmentation(m, sc, 1), logic_error);
+	BOOST_CHECK_THROW(classSegmentation.segmentation(m, 1), logic_error);
 
 	m = Mat(Size(50, 50), CV_8S);
-	BOOST_CHECK_THROW(classSegmentation.segmentation(m, sc, 1), logic_error);
+	BOOST_CHECK_THROW(classSegmentation.segmentation(m, 1), logic_error);
 }
 
 BOOST_AUTO_TEST_CASE(Image)
 {
 	Size s(50, 50);
-	SegmentsCollection sc(s);
 	ClassSegmentation classSegmentation(s);
 
 	Mat image = imread(DATA_DIR "1.bmp", -1);
 	BOOST_CHECK(s == image.size());
 	BOOST_CHECK(image.type() == CV_8U);
 
-	classSegmentation.segmentation(image, sc, 1);
-	BOOST_CHECK_EQUAL(sc.getSegmentsCount(), 1);
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(0)->image, imread(DATA_DIR "1.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(0)->segmentArea, 50*50);
-	BOOST_CHECK_EQUAL(sc.getSegment(0)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_1.bmp", sc.getSegment(0)->image);
+	classSegmentation.segmentation(image, 1);
+	BOOST_CHECK_EQUAL(classSegmentation.getSegments().size(), 1);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[0], imread(DATA_DIR "1.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_1.bmp", classSegmentation.getSegments()[0]);
 
 	image = imread(DATA_DIR "2.bmp", -1);
-	classSegmentation.segmentation(image, sc, 1);
-	BOOST_CHECK_EQUAL(sc.getSegmentsCount(), 0);
+	classSegmentation.segmentation(image, 1);
+	BOOST_CHECK_EQUAL(classSegmentation.getSegments().size(), 0);
 
 	image = imread(DATA_DIR "3.bmp", -1);
-	classSegmentation.segmentation(image, sc, 1);
-	BOOST_CHECK_EQUAL(sc.getSegmentsCount(), 1);
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(0)->image, imread(DATA_DIR "3.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(0)->segmentArea, 25*50);
-	BOOST_CHECK_EQUAL(sc.getSegment(0)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_3.bmp", sc.getSegment(0)->image);
+	classSegmentation.segmentation(image, 1);
+	BOOST_CHECK_EQUAL(classSegmentation.getSegments().size(), 1);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[0], imread(DATA_DIR "3.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_3.bmp", classSegmentation.getSegments()[0]);
 
 	image = imread(DATA_DIR "4.bmp", -1);
-	classSegmentation.segmentation(image, sc, 1);
-	BOOST_CHECK_EQUAL(sc.getSegmentsCount(), 1);
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(0)->image, imread(DATA_DIR "4.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(0)->segmentArea, 25*15);
-	BOOST_CHECK_EQUAL(sc.getSegment(0)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_4.bmp", sc.getSegment(0)->image);
+	classSegmentation.segmentation(image, 1);
+	BOOST_CHECK_EQUAL(classSegmentation.getSegments().size(), 1);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[0], imread(DATA_DIR "4.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_4.bmp", classSegmentation.getSegments()[0]);
 
 	image = imread(DATA_DIR "5.bmp", -1);
-	classSegmentation.segmentation(image, sc, 1);
-	BOOST_CHECK_EQUAL(sc.getSegmentsCount(), 14);
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(0)->image, imread(DATA_DIR "6.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(0)->segmentArea, 20);
-	BOOST_CHECK_EQUAL(sc.getSegment(0)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_5.bmp", sc.getSegment(0)->image);
+	classSegmentation.segmentation(image, 1);
+	BOOST_CHECK_EQUAL(classSegmentation.getSegments().size(), 14);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[0], imread(DATA_DIR "6.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_5.bmp", classSegmentation.getSegments()[0]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(1)->image, imread(DATA_DIR "7.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(1)->segmentArea, 5);
-	BOOST_CHECK_EQUAL(sc.getSegment(1)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_6.bmp", sc.getSegment(1)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[1], imread(DATA_DIR "7.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_6.bmp", classSegmentation.getSegments()[1]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(2)->image, imread(DATA_DIR "8.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(2)->segmentArea, 1);
-	BOOST_CHECK_EQUAL(sc.getSegment(2)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_7.bmp", sc.getSegment(2)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[2], imread(DATA_DIR "8.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_7.bmp", classSegmentation.getSegments()[2]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(3)->image, imread(DATA_DIR "9.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(3)->segmentArea, 4);
-	BOOST_CHECK_EQUAL(sc.getSegment(3)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_8.bmp", sc.getSegment(3)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[3], imread(DATA_DIR "9.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_8.bmp", classSegmentation.getSegments()[3]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(4)->image, imread(DATA_DIR "10.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(4)->segmentArea, 2);
-	BOOST_CHECK_EQUAL(sc.getSegment(4)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_9.bmp", sc.getSegment(4)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[4], imread(DATA_DIR "10.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_9.bmp", classSegmentation.getSegments()[4]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(5)->image, imread(DATA_DIR "11.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(5)->segmentArea, 3);
-	BOOST_CHECK_EQUAL(sc.getSegment(5)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_10.bmp", sc.getSegment(5)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[5], imread(DATA_DIR "11.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_10.bmp", classSegmentation.getSegments()[5]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(6)->image, imread(DATA_DIR "12.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(6)->segmentArea, 4);
-	BOOST_CHECK_EQUAL(sc.getSegment(6)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_11.bmp", sc.getSegment(6)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[6], imread(DATA_DIR "12.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_11.bmp", classSegmentation.getSegments()[6]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(7)->image, imread(DATA_DIR "13.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(7)->segmentArea, 8*10);
-	BOOST_CHECK_EQUAL(sc.getSegment(7)->segmentClass, 127);
-	imwrite(RESULTS_DIR "segment_12.bmp", sc.getSegment(7)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[7], imread(DATA_DIR "13.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_12.bmp", classSegmentation.getSegments()[7]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(8)->image, imread(DATA_DIR "14.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(8)->segmentArea, 27*27-19*19);
-	BOOST_CHECK_EQUAL(sc.getSegment(8)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_13.bmp", sc.getSegment(8)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[8], imread(DATA_DIR "14.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_13.bmp", classSegmentation.getSegments()[8]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(9)->image, imread(DATA_DIR "15.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(9)->segmentArea, 15*15-13*13);
-	BOOST_CHECK_EQUAL(sc.getSegment(9)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_14.bmp", sc.getSegment(9)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[9], imread(DATA_DIR "15.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_14.bmp", classSegmentation.getSegments()[9]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(10)->image, imread(DATA_DIR "16.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(10)->segmentArea, 11*11-9*9);
-	BOOST_CHECK_EQUAL(sc.getSegment(10)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_15.bmp", sc.getSegment(10)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[10], imread(DATA_DIR "16.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_15.bmp", classSegmentation.getSegments()[10]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(11)->image, imread(DATA_DIR "17.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(11)->segmentArea, 8*17);
-	BOOST_CHECK_EQUAL(sc.getSegment(11)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_16.bmp", sc.getSegment(11)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[11], imread(DATA_DIR "17.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_16.bmp", classSegmentation.getSegments()[11]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(12)->image, imread(DATA_DIR "18.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(12)->segmentArea, 7*7-5*5);
-	BOOST_CHECK_EQUAL(sc.getSegment(12)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_17.bmp", sc.getSegment(12)->image);
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[12], imread(DATA_DIR "18.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_17.bmp", classSegmentation.getSegments()[12]);
 
-	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(sc.getSegment(13)->image, imread(DATA_DIR "19.bmp", -1)));
-	BOOST_CHECK_EQUAL(sc.getSegment(13)->segmentArea, 3*3-1*1);
-	BOOST_CHECK_EQUAL(sc.getSegment(13)->segmentClass, 255);
-	imwrite(RESULTS_DIR "segment_18.bmp", sc.getSegment(13)->image);
-
+	BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(classSegmentation.getSegments()[13], imread(DATA_DIR "19.bmp", -1)));
+	imwrite(RESULTS_DIR "segment_18.bmp", classSegmentation.getSegments()[13]);
 }
 

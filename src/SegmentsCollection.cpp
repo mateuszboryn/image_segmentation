@@ -45,7 +45,8 @@ boost::shared_ptr<Segment> SegmentsCollection::getSegment(size_t index)
 	return segments[index];
 }
 
-size_t SegmentsCollection::getSegmentsCount() const{
+size_t SegmentsCollection::getSegmentsCount() const
+{
 	return segments.size();
 }
 
@@ -54,6 +55,12 @@ cv::Size SegmentsCollection::getImageSize() const
 	return imageSize;
 }
 
-void SegmentsCollection::clear(){
+void SegmentsCollection::clear()
+{
 	segments.clear();
+}
+
+void SegmentsCollection::merge(const SegmentsCollection& sc)
+{
+
 }

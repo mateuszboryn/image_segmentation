@@ -11,19 +11,29 @@
 #include <cv.h>
 #include <stdexcept>
 #include <stack>
+#include <vector>
+#include <boost/shared_ptr.hpp>
 
-#include "SegmentsCollection.h"
+//#include "SegmentsCollection.h"
+
+typedef std::vector<cv::Mat> SegmentsVector;
 
 class ClassSegmentation {
 public:
 	ClassSegmentation(cv::Size imageSize);
 	virtual ~ClassSegmentation();
 
-	void segmentation(cv::Mat& image, SegmentsCollection& segments, int minSegmentArea);
+	void segmentation(const cv::Mat& originalImage, int minSegmentArea);
+
+	SegmentsVector& getSegments();
 private:
-	void extractSegment(cv::Mat& image, int y, int x, u_int8_t colorClass, boost::shared_ptr<Segment> s);
+	cv::Mat image;
+
+	cv::Mat extractSegment(int y, int x, int& area);
 	cv::Size imageSize;
 	std::stack<cv::Point> points;
+
+	SegmentsVector segments;
 };
 
 #endif /* CLASSSEGMENTATION_H_ */

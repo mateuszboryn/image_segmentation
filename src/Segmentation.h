@@ -12,6 +12,8 @@
 #include <highgui.h>
 #include <string>
 #include <stdexcept>
+#include <vector>
+#include <boost/shared_ptr.hpp>
 
 #include "ClassSegmentation.h"
 #include "Threshold.h"
@@ -21,22 +23,31 @@ public:
 	Segmentation(cv::Size imageSize, const std::string outDir);
 	virtual ~Segmentation();
 
-	void segmentImage(const cv::Mat& image, SegmentsCollection& segments);
+	void segmentImage(cv::Mat& image);
 
+	SegmentsVector& getFoundSegments();
+
+	void setMinVariance(double minVariance);
+	void setMinSegmentArea(int minSegmentArea);
 private:
+	double minVariance;
+	int minSegmentArea;
 	cv::Size imageSize;
 
 	std::string outDir;
 	int imageCnt;
 
-	ClassSegmentation cs;
 	Threshold th;
 
 	int recurseLevel;
 
-	void segmentRecursive(const cv::Mat& image, cv::Mat& mask, SegmentsCollection& segments);
+	cv::Mat image;
 
-	bool checkTerminationCondition(const cv::Mat& image, cv::Mat& mask);
+	SegmentsVector foundSegments;
+
+	void segmentRecursive(cv::Mat& mask);
+
+	bool checkTerminationCondition(int *histogram);
 };
 
 #endif /* SEGMENTATION_H_ */

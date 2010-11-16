@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE( PWD )
 
 BOOST_AUTO_TEST_CASE( Params )
 {
-	Segmentation s(RESULTS_DIR);
+//	Segmentation s(RESULTS_DIR);
 
 
 }

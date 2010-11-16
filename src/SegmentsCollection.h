@@ -35,6 +35,8 @@ public:
 	cv::Size getImageSize() const;
 
 	void clear();
+
+	void merge(const SegmentsCollection& sc);
 private:
 	cv::Size imageSize;
 	std::vector<boost::shared_ptr<Segment> > segments;

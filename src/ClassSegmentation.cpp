@@ -22,17 +22,14 @@ ClassSegmentation::~ClassSegmentation()
 {
 }
 
-void ClassSegmentation::segmentation(cv::Mat& image, SegmentsCollection& segments,
-		int minSegmentArea)
+void ClassSegmentation::segmentation(const cv::Mat& originalImage, int minSegmentArea)
 {
+	image = originalImage.clone();
 	if (image.size() != imageSize) {
 		throw logic_error("image.size() != visitedPixels.size()");
 	}
 	if (image.type() != CV_8U) {
 		throw logic_error("image.type() != CV_8U");
-	}
-	if (image.size() != segments.getImageSize()) {
-		throw logic_error("image.size() != segments.getImageSize()");
 	}
 
 	segments.clear();
@@ -41,26 +38,22 @@ void ClassSegmentation::segmentation(cv::Mat& image, SegmentsCollection& segment
 	int h = image.size().height;
 	for (int y = 0; y < h; ++y) {
 		for (int x = 0; x < w; ++x) {
-			u_int8_t colorClass = image.at<u_int8_t> (y, x);
-			if (colorClass != 0) {
-				boost::shared_ptr<Segment> s = segments.createSegment();
-				s->image.setTo(0);
-				extractSegment(image, y, x, colorClass, s);
-				s->segmentClass = colorClass;
-				if (s->segmentArea < minSegmentArea) {
-					segments.removeRecentlyCreatedSegment();
+			if (image.at<u_int8_t> (y, x) != 0) {
+				int area = 0;
+				cv::Mat segment = extractSegment(y, x, area);
+				if (area >= minSegmentArea) {
+					segments.push_back(segment);
 				}
 			}
 		}
 	}
 }
 
-void ClassSegmentation::extractSegment(cv::Mat& image, int y, int x, u_int8_t colorClass,
-		boost::shared_ptr<Segment> s)
+cv::Mat ClassSegmentation::extractSegment(int y, int x, int& area)
 {
+	u_int8_t colorClass = image.at<u_int8_t> (y, x);
 	int w = image.size().width - 1, h = image.size().height - 1;
-
-	s->segmentArea = 0;
+	area = 0;
 
 	while (!points.empty()) {
 		points.pop();
@@ -69,12 +62,14 @@ void ClassSegmentation::extractSegment(cv::Mat& image, int y, int x, u_int8_t co
 	points.push(Point(x, y));
 	image.at<u_int8_t> (points.top()) = 0;
 
+	Mat segment = Mat::zeros(imageSize, CV_8U);
 	while (!points.empty()) {
 		Point p = points.top();
 		points.pop();
 
-		s->image.at<u_int8_t> (p) = 255;
-		++s->segmentArea;
+		segment.at<u_int8_t> (p) = 255;
+		//		s->image.at<u_int8_t> (p) = 255;
+		area++;
 		if (p.x > 0) { // left
 			Point newP(p.x - 1, p.y);
 			if (image.at<u_int8_t> (newP) == colorClass) {
@@ -132,4 +127,10 @@ void ClassSegmentation::extractSegment(cv::Mat& image, int y, int x, u_int8_t co
 			}
 		}
 	}
+	return segment;
+}
+
+SegmentsVector& ClassSegmentation::getSegments()
+{
+	return segments;
 }

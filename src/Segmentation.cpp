@@ -13,7 +13,7 @@ using namespace cv;
 using namespace std;
 
 Segmentation::Segmentation(cv::Size imageSize, const std::string outDir) :
-	imageSize(imageSize), outDir(outDir + "/")
+	imageSize(imageSize), outDir(outDir + "/") //, cs(imageSize)
 {
 }
 
@@ -21,7 +21,7 @@ Segmentation::~Segmentation()
 {
 }
 
-void Segmentation::segmentImage(const cv::Mat& image, SegmentsCollection& segments)
+void Segmentation::segmentImage(cv::Mat& image)
 {
 	if (image.size() != imageSize) {
 		throw logic_error("image.size() != imageSize");
@@ -30,25 +30,45 @@ void Segmentation::segmentImage(const cv::Mat& image, SegmentsCollection& segmen
 		throw logic_error("image.type() != CV_8U");
 	}
 
-	Mat mask(imageSize, CV_8U);
-
-	int histogram[Threshold::histogramSize];
-
-	th.histogram(image, mask, histogram);
-
-	int threshold = th.findOptimalThreshold(histogram);
-
-	Mat thresholded(imageSize, CV_8U);
-	th.thresholdImage(image, cv::Mat(imageSize, CV_8U), threshold, 127, 255, thresholded);
-
-	SegmentsCollection sc;
-	cs.segmentation(result, sc, 100);
+	this->image = image;
 
 	recurseLevel = 0;
+	foundSegments.clear();
+
+	Mat mask = Mat::ones(imageSize, CV_8U);
+	segmentRecursive(mask);
 }
 
-void Segmentation::segmentRecursive(const cv::Mat& image, cv::Mat& mask,
-		SegmentsCollection& segments)
+void Segmentation::segmentRecursive(cv::Mat& mask)
 {
+	int histogram[Threshold::histogramSize];
+	th.histogram(image, mask, histogram);
+	if (checkTerminationCondition(histogram)) {
+		foundSegments.push_back(mask);
+		return;
+	}
 
+	int threshold = th.findOptimalThreshold(histogram);
+	Mat thresholded(imageSize, CV_8U);
+	th.thresholdImage(image, mask, threshold, 127, 255, thresholded);
+
+	ClassSegmentation cs(imageSize);
+	cs.segmentation(thresholded, minSegmentArea);
+
+	for (int i = 0; i < cs.getSegments().size(); ++i) {
+		segmentRecursive(cs.getSegments()[i]);
+	}
+}
+
+bool Segmentation::checkTerminationCondition(int *histogram)
+{
+	// TODO: policzyc wariancje
+
+	// TODO: porwonac wariancje
+	return true;
+}
+
+SegmentsVector& Segmentation::getFoundSegments()
+{
+	return foundSegments;
 }
