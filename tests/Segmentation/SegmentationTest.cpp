@@ -189,3 +189,115 @@ BOOST_AUTO_TEST_CASE( WhiteRectangle_50x50_minArea_2 )
 		imwrite(ss.str().c_str(), seg.getFoundSegments()[i]);
 	}
 }
+
+BOOST_AUTO_TEST_CASE( BlackWhite_50x50_minVariance_1 )
+{
+	Size s(50, 50);
+	Segmentation seg(s, RESULTS_DIR);
+	seg.setMinVariance(0.24);
+	seg.setMinSegmentArea(4);
+
+	Mat image = imread(DATA_DIR "3.bmp", -1);
+	BOOST_CHECK(s == image.size());
+	BOOST_CHECK(image.type() == CV_8U);
+
+	seg.segmentImage(image);
+
+	vector <Mat> expectedResult;
+	expectedResult.push_back(imread(DATA_DIR "20.bmp", -1));
+	expectedResult.push_back(imread(DATA_DIR "3.bmp", -1));
+
+	BOOST_CHECK_EQUAL(expectedResult.size(), seg.getFoundSegments().size());
+
+	for (int i = 0; i < seg.getFoundSegments().size(); ++i) {
+		cout << "Comparing: " << i << endl;
+		BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(seg.getFoundSegments()[i], expectedResult[i]));
+		stringstream ss;
+		ss << RESULTS_DIR << "BlackWhite_50x50_minVariance_1_" << i << ".bmp";
+		imwrite(ss.str().c_str(), seg.getFoundSegments()[i]);
+	}
+}
+
+BOOST_AUTO_TEST_CASE( BlackWhite_50x50_minVariance_2 )
+{
+	Size s(50, 50);
+	Segmentation seg(s, RESULTS_DIR);
+	seg.setMinVariance(0.25);
+	seg.setMinSegmentArea(4);
+
+	Mat image = imread(DATA_DIR "3.bmp", -1);
+	BOOST_CHECK(s == image.size());
+	BOOST_CHECK(image.type() == CV_8U);
+
+	seg.segmentImage(image);
+
+	vector <Mat> expectedResult;
+	expectedResult.push_back(imread(DATA_DIR "1.bmp", -1));
+
+	BOOST_CHECK_EQUAL(expectedResult.size(), seg.getFoundSegments().size());
+
+	for (int i = 0; i < seg.getFoundSegments().size(); ++i) {
+		cout << "Comparing: " << i << endl;
+		BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(seg.getFoundSegments()[i], expectedResult[i]));
+		stringstream ss;
+		ss << RESULTS_DIR << "BlackWhite_50x50_minVariance_2_" << i << ".bmp";
+		imwrite(ss.str().c_str(), seg.getFoundSegments()[i]);
+	}
+}
+
+BOOST_AUTO_TEST_CASE( GrayGray_50x50_minVariance_3 )
+{
+	Size s(50, 50);
+	Segmentation seg(s, RESULTS_DIR);
+	// 2^-18 ~~ 3.81469726562500e-06
+	seg.setMinVariance( 3.8146e-6 );
+	seg.setMinSegmentArea(4);
+
+	Mat image = imread(DATA_DIR "22.bmp", -1);
+	BOOST_CHECK(s == image.size());
+	BOOST_CHECK(image.type() == CV_8U);
+
+	seg.segmentImage(image);
+
+	vector <Mat> expectedResult;
+	expectedResult.push_back(imread(DATA_DIR "20.bmp", -1));
+	expectedResult.push_back(imread(DATA_DIR "3.bmp", -1));
+
+	BOOST_CHECK_EQUAL(expectedResult.size(), seg.getFoundSegments().size());
+
+	for (int i = 0; i < seg.getFoundSegments().size(); ++i) {
+		cout << "Comparing: " << i << endl;
+		BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(seg.getFoundSegments()[i], expectedResult[i]));
+		stringstream ss;
+		ss << RESULTS_DIR << "GrayGray_50x50_minVariance_3_" << i << ".bmp";
+		imwrite(ss.str().c_str(), seg.getFoundSegments()[i]);
+	}
+}
+
+BOOST_AUTO_TEST_CASE( GrayGray_50x50_minVariance_4 )
+{
+	Size s(50, 50);
+	Segmentation seg(s, RESULTS_DIR);
+	// 2^-18 ~~ 3.81469726562500e-06
+	seg.setMinVariance( 3.8147e-6 );
+	seg.setMinSegmentArea(4);
+
+	Mat image = imread(DATA_DIR "22.bmp", -1);
+	BOOST_CHECK(s == image.size());
+	BOOST_CHECK(image.type() == CV_8U);
+
+	seg.segmentImage(image);
+
+	vector <Mat> expectedResult;
+	expectedResult.push_back(imread(DATA_DIR "1.bmp", -1));
+
+	BOOST_CHECK_EQUAL(expectedResult.size(), seg.getFoundSegments().size());
+
+	for (int i = 0; i < seg.getFoundSegments().size(); ++i) {
+		cout << "Comparing: " << i << endl;
+		BOOST_CHECK(ImageComparator::isEqual<u_int8_t>(seg.getFoundSegments()[i], expectedResult[i]));
+		stringstream ss;
+		ss << RESULTS_DIR << "GrayGray_50x50_minVariance_4_" << i << ".bmp";
+		imwrite(ss.str().c_str(), seg.getFoundSegments()[i]);
+	}
+}
