@@ -63,9 +63,27 @@ void Segmentation::segmentRecursive(cv::Mat& mask)
 bool Segmentation::checkTerminationCondition(int *histogram)
 {
 	// TODO: policzyc wariancje
+	double sum = 0;
+	int cnt = 0;
+	for (int i = 0; i < Threshold::histogramSize; ++i) {
+		sum += i * histogram[i];
+		cnt += histogram[i];
+	}
+	double mean = sum / cnt;
+
+	sum = 0;
+	cnt = 0;
+	for (int i = 0; i < Threshold::histogramSize; ++i) {
+		sum += (i - mean) * (i - mean) * histogram[i];
+		cnt += histogram[i];
+	}
+	double variance = sum / (cnt * Threshold::histogramSize * Threshold::histogramSize);
 
 	// TODO: porwonac wariancje
-	return true;
+	if (variance < minVariance) {
+		return true;
+	}
+	return false;
 }
 
 SegmentsVector& Segmentation::getFoundSegments()
