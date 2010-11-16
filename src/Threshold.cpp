@@ -20,8 +20,7 @@ Threshold::~Threshold()
 {
 }
 
-void Threshold::thresholdImage(const cv::Mat& image, const cv::Mat& mask, int threshold,
-		u_char belowOrEqualValue, u_char aboveValue, cv::Mat& result)
+void Threshold::thresholdImage(const cv::Mat& image, const cv::Mat& mask, int threshold, u_char belowOrEqualValue, u_char aboveValue, cv::Mat& result)
 {
 	if (image.type() != CV_8U) {
 		throw logic_error("image.type() != CV_8U");
@@ -45,11 +44,11 @@ void Threshold::thresholdImage(const cv::Mat& image, const cv::Mat& mask, int th
 	Size imageSize = image.size();
 	for (int y = 0; y < imageSize.height; ++y) {
 		for (int x = 0; x < imageSize.width; ++x) {
-			if (mask.at<u_int8_t> (y, x) != 0) {
-				if (image.at<u_int8_t> (y, x) > threshold) {
-					result.at<u_int8_t> (y, x) = aboveValue;
+			if (mask.at <u_int8_t> (y, x) != 0) {
+				if (image.at <u_int8_t> (y, x) > threshold) {
+					result.at <u_int8_t> (y, x) = aboveValue;
 				} else {
-					result.at<u_int8_t> (y, x) = belowOrEqualValue;
+					result.at <u_int8_t> (y, x) = belowOrEqualValue;
 				}
 			}
 		}
@@ -77,8 +76,8 @@ void Threshold::histogram(const cv::Mat& image, const cv::Mat& mask, int *histog
 	Size imageSize = image.size();
 	for (int y = 0; y < imageSize.height; ++y) {
 		for (int x = 0; x < imageSize.width; ++x) {
-			if (mask.at<u_int8_t> (y, x) != 0) {
-				u_int8_t brightness = image.at<u_int8_t> (y, x);
+			if (mask.at <u_int8_t> (y, x) != 0) {
+				u_int8_t brightness = image.at <u_int8_t> (y, x);
 				histogram[brightness]++;
 			}
 		}
@@ -87,8 +86,8 @@ void Threshold::histogram(const cv::Mat& image, const cv::Mat& mask, int *histog
 
 int Threshold::findOptimalThreshold(int *histogram)
 {
-	double sum=0;
-	int cnt=0;
+	double sum = 0;
+	int cnt = 0;
 	for (int i = 0; i < histogramSize; ++i) {
 		sum += histogram[i] * i;
 		cnt += histogram[i];
@@ -116,7 +115,7 @@ int Threshold::findOptimalThreshold(int *histogram)
 			sumAbove += histogram[i] * i;
 		}
 
-//		double meanBelowOrEqual = cntBelowOrEqual == 0 ? 0 : sumBelowOrEqual / cntBelowOrEqual;
+		//		double meanBelowOrEqual = cntBelowOrEqual == 0 ? 0 : sumBelowOrEqual / cntBelowOrEqual;
 		double meanBelowOrEqual = sumBelowOrEqual / cntBelowOrEqual; //cntBelowOrEqual > 0
 		double meanAbove = cntAbove == 0 ? histogramSize - 1 : sumAbove / cntAbove;
 
@@ -124,6 +123,7 @@ int Threshold::findOptimalThreshold(int *histogram)
 		currentThreshold = (meanBelowOrEqual + meanAbove) / 2;
 	} while (abs(prevThreshold - currentThreshold) > 0);
 
-	cout << "Threshold::findOptimalThreshold() iterations = " << iterations << endl;
+	cout << "Threshold::findOptimalThreshold() iterations = " << iterations << " threshold found: " << currentThreshold
+			<< endl;
 	return currentThreshold;
 }

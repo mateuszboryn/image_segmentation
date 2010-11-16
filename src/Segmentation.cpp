@@ -35,7 +35,8 @@ void Segmentation::segmentImage(cv::Mat& image)
 	recurseLevel = 0;
 	foundSegments.clear();
 
-	Mat mask = Mat::ones(imageSize, CV_8U);
+	Mat mask(imageSize, CV_8U);
+	mask.setTo(255);
 	segmentRecursive(mask);
 }
 
@@ -79,6 +80,8 @@ bool Segmentation::checkTerminationCondition(int *histogram)
 	}
 	double variance = sum / (cnt * Threshold::histogramSize * Threshold::histogramSize);
 
+	cout << "Segmentation::checkTerminationCondition(): variance = " << variance << endl;
+
 	// TODO: porwonac wariancje
 	if (variance < minVariance) {
 		return true;
@@ -89,4 +92,14 @@ bool Segmentation::checkTerminationCondition(int *histogram)
 SegmentsVector& Segmentation::getFoundSegments()
 {
 	return foundSegments;
+}
+
+void Segmentation::setMinVariance(double minVariance)
+{
+	this->minVariance = minVariance;
+}
+
+void Segmentation::setMinSegmentArea(int minSegmentArea)
+{
+	this->minSegmentArea = minSegmentArea;
 }
