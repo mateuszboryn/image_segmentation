@@ -12,6 +12,8 @@
 using namespace cv;
 using namespace std;
 
+int Segmentation::imageCnt = 0;
+
 Segmentation::Segmentation(cv::Size imageSize, const std::string outDir) :
 	imageSize(imageSize), outDir(outDir + "/") //, cs(imageSize)
 {
@@ -37,6 +39,13 @@ void Segmentation::segmentImage(cv::Mat& image)
 
 	Mat mask(imageSize, CV_8U);
 	mask.setTo(255);
+
+	stringstream ss;
+	ss << outDir << "segmentImage_" << imageCnt << ".png";
+	cout << "segmentImage(): Writing image: " << ss.str() << endl;
+	imwrite(ss.str().c_str(), mask);
+	imageCnt++;
+
 	segmentRecursive(mask);
 }
 
@@ -50,8 +59,14 @@ void Segmentation::segmentRecursive(cv::Mat& mask)
 	}
 
 	int threshold = th.findOptimalThreshold(histogram);
-	Mat thresholded(imageSize, CV_8U);
+	Mat thresholded = Mat::zeros(imageSize, CV_8U);
 	th.thresholdImage(image, mask, threshold, 127, 255, thresholded);
+
+	stringstream ss;
+	ss << outDir << "segmentRecursive_" << imageCnt << ".png";
+	cout << "segmentRecursive(): Writing image: " << ss.str() << endl;
+	imwrite(ss.str().c_str(), thresholded);
+	imageCnt++;
 
 	ClassSegmentation cs(imageSize);
 	cs.segmentation(thresholded, minSegmentArea);
@@ -65,7 +80,7 @@ bool Segmentation::checkTerminationCondition(int *histogram)
 {
 	// TODO: policzyc wariancje
 	double sum = 0;
-	int cnt = 0;
+	double cnt = 0;
 	for (int i = 0; i < Threshold::histogramSize; ++i) {
 		sum += i * histogram[i];
 		cnt += histogram[i];
@@ -80,7 +95,10 @@ bool Segmentation::checkTerminationCondition(int *histogram)
 	}
 	double variance = sum / (cnt * Threshold::histogramSize * Threshold::histogramSize);
 
-	cout << "Segmentation::checkTerminationCondition(): variance = " << variance << endl;
+//	cout << "Segmentation::checkTerminationCondition(): sum = " << sum << endl;
+//	cout << "Segmentation::checkTerminationCondition(): cnt = " << cnt << endl;
+//	cout << "Segmentation::checkTerminationCondition(): Threshold::histogramSize = " << Threshold::histogramSize << endl;
+//	cout << "Segmentation::checkTerminationCondition(): variance = " << variance << endl;
 
 	// TODO: porwonac wariancje
 	if (variance < minVariance) {

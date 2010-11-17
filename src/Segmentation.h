@@ -35,7 +35,7 @@ private:
 	cv::Size imageSize;
 
 	std::string outDir;
-	int imageCnt;
+	static int imageCnt;
 
 	Threshold th;
 
